@@ -186,40 +186,40 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     elif text in ["1 Hari", "3 Hari", "5 Hari", "7 Hari", "14 Hari"]:
 
-    bil_hari = int(text.split()[0])
-
-    context.user_data["bil_hari"] = bil_hari
-
-    await update.message.reply_text(
-        f"📆 Tempoh dipilih: {bil_hari} hari\n\n📝 Sila masukkan tujuan / catatan pinjaman:"
-    )
-
-elif text == "✏️ Lain-lain":
-
-    context.user_data["awaiting_days"] = True
-
-    await update.message.reply_text(
-        "Masukkan bilangan hari pinjaman:"
-    )
-
-elif context.user_data.get("awaiting_days"):
-
-    try:
-
-        bil_hari = int(text)
+        bil_hari = int(text.split()[0])
 
         context.user_data["bil_hari"] = bil_hari
-        context.user_data["awaiting_days"] = False
 
         await update.message.reply_text(
             f"📆 Tempoh dipilih: {bil_hari} hari\n\n📝 Sila masukkan tujuan / catatan pinjaman:"
         )
 
-    except ValueError:
+    elif text == "✏️ Lain-lain":
+
+        context.user_data["awaiting_days"] = True
 
         await update.message.reply_text(
-            "❌ Sila masukkan nombor sahaja."
+            "Masukkan bilangan hari pinjaman:"
         )
+
+    elif context.user_data.get("awaiting_days"):
+
+        try:
+
+            bil_hari = int(text)
+
+            context.user_data["bil_hari"] = bil_hari
+            context.user_data["awaiting_days"] = False
+
+            await update.message.reply_text(
+                f"📆 Tempoh dipilih: {bil_hari} hari\n\n📝 Sila masukkan tujuan / catatan pinjaman:"
+            )
+
+        except ValueError:
+
+            await update.message.reply_text(
+                "❌ Sila masukkan nombor sahaja."
+            )
 
     elif text == "❌ Batal":
 
