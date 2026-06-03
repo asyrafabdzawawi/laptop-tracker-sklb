@@ -76,7 +76,6 @@ elif text == "👨‍💼 Kelulusan Permohonan":
         await update.message.reply_text(
             "Fungsi Kelulusan akan dibina seterusnya."
         )
-```
 
 app = Application.builder().token(TOKEN).build()
 
