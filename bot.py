@@ -35,7 +35,7 @@ creds = Credentials.from_service_account_info(
 
 client = gspread.authorize(creds)
 
-sheet = client.open_by_key(SPREADSHEET_ID).worksheet("Permohonan")
+sheet = client.open_by_key(SPREADSHEET_ID).worksheet("permohonan")
 
 APPROVER_ID = 522707506
 
