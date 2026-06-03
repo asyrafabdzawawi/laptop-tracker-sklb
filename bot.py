@@ -225,7 +225,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     ]
 
     if user_id == APPROVER_ID:
-        keyboard.append(["👨‍💼 Semakan Permohonan (Tindakan GPK)"])
+        keyboard.append(["👨‍💼 Semak Permohonan (Tindakan GPK)"])
 
     reply_markup = ReplyKeyboardMarkup(
         keyboard,
@@ -461,7 +461,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         await update.message.reply_text(mesej)
 
-    elif text == "📜 Rekod Saya":
+    elif text == "📜 Rekod Pinjaman Saya":
 
         semua_data = sheet.get_all_records()
         semua_data.reverse()
@@ -513,7 +513,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
             for row in semua_data:
 
-                if row["Status"] == "Menunggu":
+                if row["Status"] == "Menunggu Kelulusan":
 
                     keyboard.append([
                         InlineKeyboardButton(
