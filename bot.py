@@ -94,6 +94,27 @@ def build_calendar():
 
     return InlineKeyboardMarkup(keyboard)
 
+def kemaskini_status(permohonan_id, status_baru):
+
+    semua_data = sheet.get_all_values()
+
+    for index, row in enumerate(semua_data):
+
+        if index == 0:
+            continue
+
+        if str(row[0]) == str(permohonan_id):
+
+            sheet.update_cell(
+                index + 1,
+                10,
+                status_baru
+            )
+
+            return True
+
+    return False
+
 def simpan_permohonan(data):
 
     next_id = len(sheet.get_all_values())
@@ -436,6 +457,52 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 )
 
             break
+
+    elif data.startswith("approve_"):
+
+        permohonan_id = int(
+            data.replace("approve_", "")
+        )
+
+        berjaya = kemaskini_status(
+            permohonan_id,
+            "Diluluskan"
+        )
+
+        if berjaya:
+
+            await query.edit_message_text(
+                f"✅ Permohonan #{permohonan_id} telah diluluskan."
+            )
+
+        else:
+
+            await query.edit_message_text(
+                "❌ Gagal mengemaskini status."
+            )
+
+    elif data.startswith("reject_"):
+
+        permohonan_id = int(
+            data.replace("reject_", "")
+        )
+
+        berjaya = kemaskini_status(
+            permohonan_id,
+            "Ditolak"
+        )
+
+        if berjaya:
+
+            await query.edit_message_text(
+                f"❌ Permohonan #{permohonan_id} telah ditolak."
+            )
+
+        else:
+
+            await query.edit_message_text(
+                "❌ Gagal mengemaskini status."
+             )
 
         context.user_data["tarikh_mula"] = selected_date.strftime("%d/%m/%Y")
 
