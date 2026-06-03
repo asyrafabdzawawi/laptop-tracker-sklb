@@ -155,8 +155,21 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         context.user_data["tarikh_mula"] = datetime.now().strftime("%d/%m/%Y")
 
+        keyboard = [
+            ["1 Hari", "3 Hari", "5 Hari"],
+            ["7 Hari", "14 Hari"],
+            ["✏️ Lain-lain"],
+            ["❌ Batal"]
+        ]
+
+        reply_markup = ReplyKeyboardMarkup(
+            keyboard,
+            resize_keyboard=True
+        )
+
         await update.message.reply_text(
-            f"📅 Tarikh Mula: {context.user_data['tarikh_mula']}\n\n📆 Berapa hari pinjaman diperlukan?"
+            f"📅 Tarikh Mula: {context.user_data['tarikh_mula']}\n\n📆 Pilih tempoh pinjaman:",
+            reply_markup=reply_markup
         )
 
     elif text == "📆 Pilih Tarikh Lain":
