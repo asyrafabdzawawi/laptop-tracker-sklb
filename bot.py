@@ -49,8 +49,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
-
-user_id = update.effective_user.id
+    user_id = update.effective_user.id
 
 if user_id not in AUTHORIZED_USERS:
     return
