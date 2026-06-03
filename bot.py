@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 import calendar
 import json
 import gspread
+from zoneinfo import ZoneInfo
 from google.oauth2.service_account import Credentials
 from telegram import (
     Update,
@@ -125,7 +126,7 @@ def kemaskini_status(
                 sheet.update_cell(
                     index,
                     12,
-                    datetime.now().strftime(
+                    datetime.now(ZoneInfo("Asia/Kuala_Lumpur"))
                         "%d/%m/%Y %H:%M"
                     )
                 )
