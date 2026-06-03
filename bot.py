@@ -175,7 +175,7 @@ def semak_ketersediaan_laptop(
             continue
 
         mula_lama = datetime.strptime(
-            row["Tarikh Mula"],
+            row["Tarikh Pinjam"],
             "%d/%m/%Y"
         )
 
@@ -302,7 +302,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
 
         await update.message.reply_text(
-            f"📅 Tarikh Mula: {context.user_data['tarikh_mula']}\n\n📆 Pilih tempoh pinjaman:",
+            f"📅 Tarikh Mula Pinjaman: {context.user_data['tarikh_mula']}\n\n📆 Pilih tempoh pinjaman:",
             reply_markup=reply_markup
         )
 
@@ -373,7 +373,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(
             f"📋 SEMAKAN PERMOHONAN\n\n"
             f"💻 Laptop : {context.user_data['laptop']}\n"
-            f"📅 Tarikh Mula : {context.user_data['tarikh_mula']}\n"
+            f"📅 Tarikh Mula Pinjam : {context.user_data['tarikh_mula']}\n"
             f"📆 Tempoh : {context.user_data['bil_hari']} Hari\n\n"
             f"📝 Catatan :\n{context.user_data['catatan']}",
             reply_markup=reply_markup
@@ -422,7 +422,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         await update.message.reply_text(
             "✅ Permohonan berjaya dihantar.\n\n"
-            "📋 Status: Menunggu Kelulusan Pegawai Pengesah"
+            "📋 Status: Maklumkan pada GPK untuk mengesahkan pinjaman sebelum atau selepas mengambil laptop. "
         )
 
         context.user_data.clear()
@@ -484,7 +484,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
                 rekod_pengguna.append(
                     f"#{row['ID']} | {row['Laptop']}\n"
-                    f"📅 {row['Tarikh Mula']} → {row['Tarikh Pulang']}\n"
+                    f"📅 {row['Tarikh Pinjam']} → {row['Tarikh Pulang']}\n"
                     f"{ikon} {status}\n"
                     f"📝 {row['Catatan']}\n"
                 )
@@ -612,7 +612,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f"📋 PERMOHONAN #{row['ID']}\n\n"
                     f"👤 Nama : {row['Nama']}\n"
                     f"💻 Laptop : {row['Laptop']}\n"
-                    f"📅 Tarikh Mula : {row['Tarikh Mula']}\n"
+                    f"📅 Tarikh Pinjam : {row['Tarikh Pinjam']}\n"
                     f"📆 Tempoh : {row['Tempoh Hari']} Hari\n"
                     f"📅 Tarikh Pulang : {row['Tarikh Pulang']}\n\n"
                     f"📝 Catatan :\n{row['Catatan']}\n\n"
@@ -644,7 +644,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 text=(
                     "🎉 Permohonan pinjaman laptop anda telah diluluskan.\n\n"
                     f"💻 Laptop: {rekod['Laptop']}\n"
-                    f"📅 Tarikh Mula: {rekod['Tarikh Mula']}\n"
+                    f"📅 Tarikh Pinjam: {rekod['Tarikh Pinjam']}\n"
                     f"📅 Tarikh Pulang: {rekod['Tarikh Pulang']}"
                 )
             )
@@ -681,7 +681,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 text=(
                     "❌ Permohonan pinjaman laptop anda tidak diluluskan.\n\n"
                     f"💻 Laptop: {rekod['Laptop']}\n"
-                    f"📅 Tarikh Mula: {rekod['Tarikh Mula']}"
+                    f"📅 Tarikh Pinjam: {rekod['Tarikh Pinjam']}"
                 )
             )
 
