@@ -57,46 +57,50 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     if text == "📥 Mohon Pinjaman":
 
-    keyboard = [
-        ["G1", "G2", "G3", "G4"],
-        ["G5", "G6", "G7", "G8"],
-        ["❌ Batal"]
-    ]
+        keyboard = [
+            ["G1", "G2", "G3", "G4"],
+            ["G5", "G6", "G7", "G8"],
+            ["❌ Batal"]
+        ]
 
-    reply_markup = ReplyKeyboardMarkup(
-        keyboard,
-        resize_keyboard=True
-    )
+        reply_markup = ReplyKeyboardMarkup(
+            keyboard,
+            resize_keyboard=True
+        )
 
-    await update.message.reply_text(
-        "💻 Pilih Laptop:",
-        reply_markup=reply_markup
-    )
+        await update.message.reply_text(
+            "💻 Pilih Laptop:",
+            reply_markup=reply_markup
+        )
 
     elif text in ["G1", "G2", "G3", "G4", "G5", "G6", "G7", "G8"]:
 
-    context.user_data["laptop"] = text
+        context.user_data["laptop"] = text
 
-    await update.message.reply_text(
-        f"✅ Laptop dipilih: {text}\n\n📅 Tarikh Mula Pinjaman?"
-    )
+        await update.message.reply_text(
+            f"✅ Laptop dipilih: {text}\n\n📅 Tarikh Mula Pinjaman?"
+        )
 
     elif text == "❌ Batal":
 
-    await start(update, context)
-    
+        await start(update, context)
+
     elif text == "📊 Status Laptop":
+
         await update.message.reply_text(
             "Fungsi Status Laptop akan dibina seterusnya."
         )
 
     elif text == "📜 Rekod Saya":
+
         await update.message.reply_text(
             "Fungsi Rekod Saya akan dibina seterusnya."
         )
 
     elif text == "👨‍💼 Kelulusan Permohonan":
+
         if user_id == APPROVER_ID:
+
             await update.message.reply_text(
                 "Fungsi Kelulusan akan dibina seterusnya."
             )
