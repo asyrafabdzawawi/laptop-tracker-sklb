@@ -206,7 +206,7 @@ def simpan_permohonan(data):
         data["bil_hari"],
         data["tarikh_pulang"],
         data["catatan"],
-        "Menunggu"
+        "Menunggu Kelulusan"
     ])
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -221,7 +221,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     keyboard = [
         ["📥 Mohon Pinjaman"],
-        ["📊 Status Laptop", "📜 Rekod Saya"]
+        ["📊 Status Laptop", "📜 Rekod Pinjaman Saya"]
     ]
 
     if user_id == APPROVER_ID:
@@ -464,6 +464,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     elif text == "📜 Rekod Saya":
 
         semua_data = sheet.get_all_records()
+        semua_data.reverse()
 
         rekod_pengguna = []
 
@@ -502,7 +503,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 + "\n".join(rekod_pengguna)
             )
 
-    elif text == "👨‍💼 Kelulusan Permohonan":
+    elif text == "👨‍💼 Semak Permohonan (Tindakan GPK)":
 
         if user_id == APPROVER_ID:
 
