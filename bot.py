@@ -1,10 +1,17 @@
 import os
 from datetime import datetime
-from telegram import Update, ReplyKeyboardMarkup
+import calendar
+from telegram import (
+    Update,
+    ReplyKeyboardMarkup,
+    InlineKeyboardMarkup,
+    InlineKeyboardButton
+)
 from telegram.ext import (
     Application,
     CommandHandler,
     MessageHandler,
+    CallbackQueryHandler,
     ContextTypes,
     filters
 )
@@ -17,6 +24,56 @@ AUTHORIZED_USERS = {
     522707506: "Muhammad Asyraf"
 }
 
+def build_calendar():
+
+    today = datetime.now()
+
+    year = today.year
+    month = today.month
+
+    cal = calendar.monthcalendar(year, month)
+
+    keyboard = []
+
+    keyboard.append([
+        InlineKeyboardButton(
+            f"📅 {today.strftime('%B %Y')}",
+            callback_data="ignore"
+        )
+    ])
+
+    for week in cal:
+
+        row = []
+
+        for day in week:
+
+            if day == 0:
+                row.append(
+                    InlineKeyboardButton(" ", callback_data="ignore")
+                )
+
+            elif day == today.day:
+
+                row.append(
+                    InlineKeyboardButton(
+                        f"🔵{day}",
+                        callback_data=f"date_{day}"
+                    )
+                )
+
+            else:
+
+                row.append(
+                    InlineKeyboardButton(
+                        str(day),
+                        callback_data=f"date_{day}"
+                    )
+                )
+
+        keyboard.append(row)
+
+    return InlineKeyboardMarkup(keyboard)
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
@@ -104,10 +161,9 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     elif text == "📆 Pilih Tarikh Lain":
 
-        context.user_data["awaiting_date"] = True
-
         await update.message.reply_text(
-            "Sila masukkan tarikh dalam format:\n\nDD/MM/YYYY\n\nContoh: 10/06/2026"
+            "📅 Pilih Tarikh:",
+            reply_markup=build_calendar()
         )
 
     elif context.user_data.get("awaiting_date"):
