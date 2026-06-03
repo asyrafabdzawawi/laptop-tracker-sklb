@@ -184,6 +184,43 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 "❌ Format tarikh tidak sah.\n\nContoh: 10/06/2026"
             )
 
+    elif text in ["1 Hari", "3 Hari", "5 Hari", "7 Hari", "14 Hari"]:
+
+    bil_hari = int(text.split()[0])
+
+    context.user_data["bil_hari"] = bil_hari
+
+    await update.message.reply_text(
+        f"📆 Tempoh dipilih: {bil_hari} hari\n\n📝 Sila masukkan tujuan / catatan pinjaman:"
+    )
+
+elif text == "✏️ Lain-lain":
+
+    context.user_data["awaiting_days"] = True
+
+    await update.message.reply_text(
+        "Masukkan bilangan hari pinjaman:"
+    )
+
+elif context.user_data.get("awaiting_days"):
+
+    try:
+
+        bil_hari = int(text)
+
+        context.user_data["bil_hari"] = bil_hari
+        context.user_data["awaiting_days"] = False
+
+        await update.message.reply_text(
+            f"📆 Tempoh dipilih: {bil_hari} hari\n\n📝 Sila masukkan tujuan / catatan pinjaman:"
+        )
+
+    except ValueError:
+
+        await update.message.reply_text(
+            "❌ Sila masukkan nombor sahaja."
+        )
+
     elif text == "❌ Batal":
 
         await start(update, context)
@@ -234,8 +271,21 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         context.user_data["tarikh_mula"] = selected_date.strftime("%d/%m/%Y")
 
-        await query.edit_message_text(
-            f"✅ Tarikh dipilih: {context.user_data['tarikh_mula']}\n\n📆 Berapa hari pinjaman diperlukan?"
+        keyboard = [
+            ["1 Hari", "3 Hari", "5 Hari"],
+            ["7 Hari", "14 Hari"],
+            ["✏️ Lain-lain"],
+            ["❌ Batal"]
+        ]
+
+        reply_markup = ReplyKeyboardMarkup(
+            keyboard,
+            resize_keyboard=True
+        )
+
+        await query.message.reply_text(
+            f"✅ Tarikh dipilih: {context.user_data['tarikh_mula']}\n\n📆 Pilih tempoh pinjaman:",
+            reply_markup=reply_markup
         )
 
 
