@@ -320,7 +320,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         context.user_data["bil_hari"] = bil_hari
 
         await update.message.reply_text(
-            f"📆 Tempoh dipilih: {bil_hari} hari\n\n📝 Sila masukkan tujuan / catatan pinjaman:"
+            f"📆 Tempoh dipilih: {bil_hari} hari\n\n📝 Sila masukkan tujuan / catatan pinjaman jika ada: (Contoh: PDP, tidak ada mouse)"
         )
 
         context.user_data["awaiting_catatan"] = True
