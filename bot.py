@@ -126,9 +126,9 @@ def kemaskini_status(
                 sheet.update_cell(
                     index,
                     12,
-                    datetime.now(ZoneInfo("Asia/Kuala_Lumpur"))
-                        "%d/%m/%Y %H:%M"
-                    )
+                    datetime.now(
+                        ZoneInfo("Asia/Kuala_Lumpur")
+                    ).strftime("%d/%m/%Y %H:%M")
                 )
 
             return True
