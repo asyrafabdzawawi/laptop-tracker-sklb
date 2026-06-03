@@ -145,7 +145,7 @@ def status_laptop():
 
         laptop = row["Laptop"]
 
-        if row["Status"] == "Menunggu":
+        if row["Status"] == "Menunggu Kelulusan":
 
             status[laptop] = "🟡 Menunggu Kelulusan"
 
@@ -171,7 +171,7 @@ def semak_ketersediaan_laptop(
         if row["Laptop"] != laptop:
             continue
 
-        if row["Status"] not in ["Menunggu", "Diluluskan"]:
+        if row["Status"] not in ["Menunggu Kelulusan", "Diluluskan"]:
             continue
 
         mula_lama = datetime.strptime(
