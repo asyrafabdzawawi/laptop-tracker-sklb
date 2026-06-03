@@ -56,10 +56,35 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     text = update.message.text
 
     if text == "📥 Mohon Pinjaman":
-        await update.message.reply_text(
-            "💻 Pilih Laptop:\n\nG1, G2, G3, G4, G5, G6, G7 atau G8"
-        )
 
+    keyboard = [
+        ["G1", "G2", "G3", "G4"],
+        ["G5", "G6", "G7", "G8"],
+        ["❌ Batal"]
+    ]
+
+    reply_markup = ReplyKeyboardMarkup(
+        keyboard,
+        resize_keyboard=True
+    )
+
+    await update.message.reply_text(
+        "💻 Pilih Laptop:",
+        reply_markup=reply_markup
+    )
+
+    elif text in ["G1", "G2", "G3", "G4", "G5", "G6", "G7", "G8"]:
+
+    context.user_data["laptop"] = text
+
+    await update.message.reply_text(
+        f"✅ Laptop dipilih: {text}\n\n📅 Tarikh Mula Pinjaman?"
+    )
+
+    elif text == "❌ Batal":
+
+    await start(update, context)
+    
     elif text == "📊 Status Laptop":
         await update.message.reply_text(
             "Fungsi Status Laptop akan dibina seterusnya."
