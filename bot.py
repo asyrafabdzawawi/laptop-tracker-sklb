@@ -207,6 +207,8 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
             f"📆 Tempoh dipilih: {bil_hari} hari\n\n📝 Sila masukkan tujuan / catatan pinjaman:"
         )
 
+        context.user_data["awaiting_catatan"] = True
+
     elif text == "✏️ Lain-lain":
 
         context.user_data["awaiting_days"] = True
@@ -228,11 +230,26 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 f"📆 Tempoh dipilih: {bil_hari} hari\n\n📝 Sila masukkan tujuan / catatan pinjaman:"
             )
 
+            context.user_data["awaiting_catatan"] = True
+
         except ValueError:
 
             await update.message.reply_text(
                 "❌ Sila masukkan nombor sahaja."
             )
+
+    elif context.user_data.get("awaiting_catatan"):
+
+        context.user_data["catatan"] = text
+        context.user_data["awaiting_catatan"] = False
+
+        await update.message.reply_text(
+            f"📋 SEMAKAN PERMOHONAN\n\n"
+            f"💻 Laptop : {context.user_data['laptop']}\n"
+            f"📅 Tarikh Mula : {context.user_data['tarikh_mula']}\n"
+            f"📆 Tempoh : {context.user_data['bil_hari']} Hari\n\n"
+            f"📝 Catatan :\n{text}"
+        )
 
     elif text == "❌ Batal":
 
