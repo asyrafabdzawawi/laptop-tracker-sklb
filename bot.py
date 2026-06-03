@@ -126,6 +126,38 @@ def dapatkan_permohonan(permohonan_id):
 
     return None
 
+def status_laptop():
+
+    semua_data = sheet.get_all_records()
+
+    status = {
+        "G1": "🟢 Tersedia",
+        "G2": "🟢 Tersedia",
+        "G3": "🟢 Tersedia",
+        "G4": "🟢 Tersedia",
+        "G5": "🟢 Tersedia",
+        "G6": "🟢 Tersedia",
+        "G7": "🟢 Tersedia",
+        "G8": "🟢 Tersedia"
+    }
+
+    for row in semua_data:
+
+        laptop = row["Laptop"]
+
+        if row["Status"] == "Menunggu":
+
+            status[laptop] = "🟡 Menunggu Kelulusan"
+
+        elif row["Status"] == "Diluluskan":
+
+            status[laptop] = (
+                f"🔴 Dipinjam sehingga "
+                f"{row['Tarikh Pulang']}"
+            )
+
+    return status
+
 def simpan_permohonan(data):
 
     next_id = len(sheet.get_all_values())
@@ -362,9 +394,21 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     elif text == "📊 Status Laptop":
 
-        await update.message.reply_text(
-            "Fungsi Status Laptop akan dibina seterusnya."
+        status = status_laptop()
+
+        mesej = (
+            "💻 STATUS LAPTOP\n\n"
+            f"G1 : {status['G1']}\n"
+            f"G2 : {status['G2']}\n"
+            f"G3 : {status['G3']}\n"
+            f"G4 : {status['G4']}\n"
+            f"G5 : {status['G5']}\n"
+            f"G6 : {status['G6']}\n"
+            f"G7 : {status['G7']}\n"
+            f"G8 : {status['G8']}"
         )
+
+        await update.message.reply_text(mesej)
 
     elif text == "📜 Rekod Saya":
 
