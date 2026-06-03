@@ -1,4 +1,5 @@
 import os
+from datetime import datetime
 from telegram import Update, ReplyKeyboardMarkup
 from telegram.ext import (
     Application,
@@ -77,8 +78,55 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         context.user_data["laptop"] = text
 
+        keyboard = [
+            ["📍 Hari Ini"],
+            ["📆 Pilih Tarikh Lain"],
+            ["❌ Batal"]
+        ]
+
+    reply_markup = ReplyKeyboardMarkup(
+        keyboard,
+        resize_keyboard=True
+    )
+
+    await update.message.reply_text(
+        f"✅ Laptop dipilih: {text}\n\n📅 Tarikh Mula Pinjaman:",
+        reply_markup=reply_markup
+    )
+
+    elif text == "📍 Hari Ini":
+
+    context.user_data["tarikh_mula"] = datetime.now().strftime("%d/%m/%Y")
+
+    await update.message.reply_text(
+        f"📅 Tarikh Mula: {context.user_data['tarikh_mula']}\n\n📆 Berapa hari pinjaman diperlukan?"
+    )
+
+    elif text == "📆 Pilih Tarikh Lain":
+
+        context.user_data["awaiting_date"] = True
+
+    await update.message.reply_text(
+        "Sila masukkan tarikh dalam format:\n\nDD/MM/YYYY\n\nContoh: 10/06/2026"
+    )
+
+    elif context.user_data.get("awaiting_date"):
+
+        try:
+
+            datetime.strptime(text, "%d/%m/%Y")
+
+            context.user_data["tarikh_mula"] = text
+            context.user_data["awaiting_date"] = False
+
         await update.message.reply_text(
-            f"✅ Laptop dipilih: {text}\n\n📅 Tarikh Mula Pinjaman?"
+            f"📅 Tarikh Mula: {text}\n\n📆 Berapa hari pinjaman diperlukan?"
+        )
+
+    except ValueError:
+
+        await update.message.reply_text(
+            "❌ Format tarikh tidak sah.\n\nContoh: 10/06/2026"
         )
 
     elif text == "❌ Batal":
