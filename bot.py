@@ -417,6 +417,19 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
             day
         )
 
+        
+
+        context.user_data["tarikh_mula"] = selected_date.strftime("%d/%m/%Y")
+
+        keyboard = [
+            ["1 Hari", "3 Hari", "5 Hari"],
+            ["7 Hari", "14 Hari"],
+            ["✏️ Lain-lain"],
+            ["❌ Batal"]
+        ]
+
+        
+
     elif data.startswith("permohonan_"):
 
         permohonan_id = int(
@@ -456,7 +469,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     reply_markup=keyboard
                 )
 
-            break
+                break   
 
     elif data.startswith("approve_"):
 
@@ -504,14 +517,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 "❌ Gagal mengemaskini status."
              )
 
-        context.user_data["tarikh_mula"] = selected_date.strftime("%d/%m/%Y")
-
-        keyboard = [
-            ["1 Hari", "3 Hari", "5 Hari"],
-            ["7 Hari", "14 Hari"],
-            ["✏️ Lain-lain"],
-            ["❌ Batal"]
-        ]
+        
 
         reply_markup = ReplyKeyboardMarkup(
             keyboard,
