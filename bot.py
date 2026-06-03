@@ -439,15 +439,15 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
             ["❌ Batal"]
         ]
 
-    reply_markup = ReplyKeyboardMarkup(
-        keyboard,
-        resize_keyboard=True
-    )
+        reply_markup = ReplyKeyboardMarkup(
+            keyboard,
+            resize_keyboard=True
+        )
 
-    await query.message.reply_text(
-        f"✅ Tarikh dipilih: {context.user_data['tarikh_mula']}\n\n📆 Pilih tempoh pinjaman:",
-        reply_markup=reply_markup
-    )
+        await query.message.reply_text(
+            f"✅ Tarikh dipilih: {context.user_data['tarikh_mula']}\n\n📆 Pilih tempoh pinjaman:",
+            reply_markup=reply_markup
+        )
 
         
 
