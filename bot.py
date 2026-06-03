@@ -1,6 +1,9 @@
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 import calendar
+import json
+import gspread
+from google.oauth2.service_account import Credentials
 from telegram import (
     Update,
     ReplyKeyboardMarkup,
@@ -17,6 +20,22 @@ from telegram.ext import (
 )
 
 TOKEN = os.getenv("BOT_TOKEN")
+
+SPREADSHEET_ID = "1h9dhCZRjwVVnwO46XiTUs77m5cyfSH60L-UgFRJlybA"
+
+creds_dict = json.loads(os.getenv("GOOGLE_CREDENTIALS"))
+
+creds = Credentials.from_service_account_info(
+    creds_dict,
+    scopes=[
+        "https://www.googleapis.com/auth/spreadsheets",
+        "https://www.googleapis.com/auth/drive"
+    ]
+)
+
+client = gspread.authorize(creds)
+
+sheet = client.open_by_key(SPREADSHEET_ID).worksheet("Permohonan")
 
 APPROVER_ID = 522707506
 
@@ -74,6 +93,23 @@ def build_calendar():
         keyboard.append(row)
 
     return InlineKeyboardMarkup(keyboard)
+
+def simpan_permohonan(data):
+
+    next_id = len(sheet.get_all_values())
+
+    sheet.append_row([
+        next_id,
+        data["nama"],
+        data["telegram_id"],
+        data["laptop"],
+        data["tarikh_permohonan"],
+        data["tarikh_mula"],
+        data["bil_hari"],
+        data["tarikh_pulang"],
+        data["catatan"],
+        "Menunggu"
+    ])
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
@@ -179,24 +215,6 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
             reply_markup=build_calendar()
         )
 
-    elif context.user_data.get("awaiting_date"):
-
-        try:
-            datetime.strptime(text, "%d/%m/%Y")
-
-            context.user_data["tarikh_mula"] = text
-            context.user_data["awaiting_date"] = False
-
-            await update.message.reply_text(
-                f"📅 Tarikh Mula: {text}\n\n📆 Berapa hari pinjaman diperlukan?"
-            )
-
-        except ValueError:
-
-            await update.message.reply_text(
-                "❌ Format tarikh tidak sah.\n\nContoh: 10/06/2026"
-            )
-
     elif text in ["1 Hari", "3 Hari", "5 Hari", "7 Hari", "14 Hari"]:
 
         bil_hari = int(text.split()[0])
@@ -265,9 +283,34 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     elif text == "✅ Hantar Permohonan":
 
-        await update.message.reply_text(
-            "✅ Permohonan berjaya dihantar kepada Pegawai Pengesah."
+        tarikh_permohonan = datetime.now()
+
+        tarikh_mula = datetime.strptime(
+            context.user_data["tarikh_mula"],
+            "%d/%m/%Y"
         )
+
+        tarikh_pulang = tarikh_mula + timedelta(
+            days=context.user_data["bil_hari"]
+        )
+
+        simpan_permohonan({
+            "nama": AUTHORIZED_USERS[user_id],
+            "telegram_id": user_id,
+            "laptop": context.user_data["laptop"],
+            "tarikh_permohonan": tarikh_permohonan.strftime("%d/%m/%Y"),
+            "tarikh_mula": context.user_data["tarikh_mula"],
+            "bil_hari": context.user_data["bil_hari"],
+            "tarikh_pulang": tarikh_pulang.strftime("%d/%m/%Y"),
+            "catatan": context.user_data["catatan"]
+        })
+
+        await update.message.reply_text(
+            "✅ Permohonan berjaya dihantar.\n\n"
+            "📋 Status: Menunggu Kelulusan Pegawai Pengesah"
+        )
+
+        context.user_data.clear()
 
         await start(update, context)
 
