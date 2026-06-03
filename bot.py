@@ -196,7 +196,7 @@ def simpan_permohonan(data):
 
     next_id = len(sheet.get_all_values())
 
-    sheet.append_row([
+    sheet.insert_row([
         next_id,
         data["nama"],
         data["telegram_id"],
@@ -207,7 +207,7 @@ def simpan_permohonan(data):
         data["tarikh_pulang"],
         data["catatan"],
         "Menunggu Kelulusan"
-    ])
+    ], 2)
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
@@ -225,7 +225,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     ]
 
     if user_id == APPROVER_ID:
-        keyboard.append(["👨‍💼 Semak Permohonan (Tindakan GPK)"])
+        keyboard.append(["📝 Tindakan GPK"])
 
     reply_markup = ReplyKeyboardMarkup(
         keyboard,
@@ -343,7 +343,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
             context.user_data["awaiting_days"] = False
 
             await update.message.reply_text(
-                f"📆 Tempoh dipilih: {bil_hari} hari\n\n📝 Sila masukkan tujuan / catatan pinjaman:"
+                f"📆 Tempoh dipilih: {bil_hari} hari\n\n📝 Sila masukkan tujuan / catatan pinjaman jika ada: (Contoh: PDP, tidak ada mouse)"
             )
 
             context.user_data["awaiting_catatan"] = True
@@ -503,7 +503,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 + "\n".join(rekod_pengguna)
             )
 
-    elif text == "👨‍💼 Semak Permohonan (Tindakan GPK)":
+    elif text == "📝 Tindakan GPK":
 
         if user_id == APPROVER_ID:
 
