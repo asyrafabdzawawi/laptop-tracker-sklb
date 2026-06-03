@@ -225,7 +225,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     ]
 
     if user_id == APPROVER_ID:
-        keyboard.append(["👨‍💼 Kelulusan Permohonan"])
+        keyboard.append(["👨‍💼 Semakan Permohonan (Tindakan GPK)"])
 
     reply_markup = ReplyKeyboardMarkup(
         keyboard,
