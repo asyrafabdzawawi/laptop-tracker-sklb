@@ -18,7 +18,6 @@ AUTHORIZED_USERS = {
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
-```
 user_id = update.effective_user.id
 
 if user_id not in AUTHORIZED_USERS:
@@ -44,11 +43,11 @@ await update.message.reply_text(
     "💻 Tracker Pinjaman Laptop SK Labu Besar\n\nSila pilih menu:",
     reply_markup=reply_markup
 )
-```
+
 
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
-```
+
 user_id = update.effective_user.id
 
 if user_id not in AUTHORIZED_USERS:
