@@ -463,9 +463,44 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     elif text == "📜 Rekod Saya":
 
-        await update.message.reply_text(
-            "Fungsi Rekod Saya akan dibina seterusnya."
-        )
+        semua_data = sheet.get_all_records()
+
+        rekod_pengguna = []
+
+        for row in semua_data:
+
+            if str(row["Telegram ID"]) == str(user_id):
+
+                status = row["Status"]
+
+                if status == "Diluluskan":
+                    ikon = "✅"
+
+                elif status == "Ditolak":
+                    ikon = "❌"
+
+                else:
+                    ikon = "🟡"
+
+                rekod_pengguna.append(
+                    f"#{row['ID']} | {row['Laptop']}\n"
+                    f"📅 {row['Tarikh Mula']} → {row['Tarikh Pulang']}\n"
+                    f"{ikon} {status}\n"
+                    f"📝 {row['Catatan']}\n"
+                )
+
+        if not rekod_pengguna:
+
+            await update.message.reply_text(
+                "📭 Anda belum mempunyai sebarang rekod pinjaman."
+            )
+
+        else:
+
+            await update.message.reply_text(
+                "📜 REKOD PINJAMAN ANDA\n\n"
+                + "\n".join(rekod_pengguna)
+            )
 
     elif text == "👨‍💼 Kelulusan Permohonan":
 
