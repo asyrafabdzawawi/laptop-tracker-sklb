@@ -94,22 +94,41 @@ def build_calendar():
 
     return InlineKeyboardMarkup(keyboard)
 
-def kemaskini_status(permohonan_id, status_baru):
+from datetime import datetime
 
-    semua_data = sheet.get_all_values()
+def kemaskini_status(
+    permohonan_id,
+    status_baru,
+    pegawai=None
+):
 
-    for index, row in enumerate(semua_data):
+    semua_data = sheet.get_all_records()
 
-        if index == 0:
-            continue
+    for index, row in enumerate(semua_data, start=2):
 
-        if str(row[0]) == str(permohonan_id):
+        if str(row["ID"]) == str(permohonan_id):
 
             sheet.update_cell(
-                index + 1,
+                index,
                 10,
                 status_baru
             )
+
+            if pegawai:
+
+                sheet.update_cell(
+                    index,
+                    11,
+                    pegawai
+                )
+
+                sheet.update_cell(
+                    index,
+                    12,
+                    datetime.now().strftime(
+                        "%d/%m/%Y %H:%M"
+                    )
+                )
 
             return True
 
@@ -206,7 +225,9 @@ def simpan_permohonan(data):
         data["bil_hari"],
         data["tarikh_pulang"],
         data["catatan"],
-        "Menunggu Kelulusan"
+        "Menunggu Kelulusan",
+        "",
+        ""
     ], 2)
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -631,7 +652,8 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         berjaya = kemaskini_status(
             permohonan_id,
-            "Diluluskan"
+            "Diluluskan",
+            AUTHORIZED_USERS[user_id]
         )
 
         if berjaya:
@@ -668,7 +690,8 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         berjaya = kemaskini_status(
             permohonan_id,
-            "Ditolak"
+            "Ditolak",
+            AUTHORIZED_USERS[user_id]
         )
 
         if berjaya:
