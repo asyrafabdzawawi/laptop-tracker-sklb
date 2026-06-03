@@ -344,9 +344,30 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         if user_id == APPROVER_ID:
 
-            await update.message.reply_text(
-                "Fungsi Kelulusan akan dibina seterusnya."
-            )
+            semua_data = sheet.get_all_records()
+
+            permohonan_menunggu = []
+
+            for row in semua_data:
+
+                if row["Status"] == "Menunggu":
+
+                    permohonan_menunggu.append(
+                        f"#{row['ID']} - {row['Nama']} ({row['Laptop']})"
+                    )
+
+            if not permohonan_menunggu:
+
+                await update.message.reply_text(
+                    "✅ Tiada permohonan yang menunggu kelulusan."
+                )
+
+            else:
+
+                await update.message.reply_text(
+                    "📋 Permohonan Menunggu Kelulusan\n\n"
+                    + "\n".join(permohonan_menunggu)
+                )
 
 
 async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
