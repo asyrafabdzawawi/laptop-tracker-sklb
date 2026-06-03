@@ -565,6 +565,8 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     data = query.data
 
+    user_id = query.from_user.id
+
     if data == "ignore":
         return
 
