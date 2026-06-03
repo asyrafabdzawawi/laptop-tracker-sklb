@@ -209,12 +209,40 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
             )
 
 
+async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
+    query = update.callback_query
+
+    await query.answer()
+
+    data = query.data
+
+    if data == "ignore":
+        return
+
+    if data.startswith("date_"):
+
+        day = int(data.replace("date_", ""))
+
+        today = datetime.now()
+
+        selected_date = datetime(
+            today.year,
+            today.month,
+            day
+        )
+
+        context.user_data["tarikh_mula"] = selected_date.strftime("%d/%m/%Y")
+
+        await query.edit_message_text(
+            f"✅ Tarikh dipilih: {context.user_data['tarikh_mula']}\n\n📆 Berapa hari pinjaman diperlukan?"
+        )
 
 
 app = Application.builder().token(TOKEN).build()
 
 app.add_handler(CommandHandler("start", start))
+app.add_handler(CallbackQueryHandler(button_callback))
 app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 
 app.run_polling()
