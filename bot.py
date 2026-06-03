@@ -158,6 +158,40 @@ def status_laptop():
 
     return status
 
+def semak_ketersediaan_laptop(
+    laptop,
+    tarikh_mula_baru,
+    tarikh_pulang_baru
+):
+
+    semua_data = sheet.get_all_records()
+
+    for row in semua_data:
+
+        if row["Laptop"] != laptop:
+            continue
+
+        if row["Status"] not in ["Menunggu", "Diluluskan"]:
+            continue
+
+        mula_lama = datetime.strptime(
+            row["Tarikh Mula"],
+            "%d/%m/%Y"
+        )
+
+        pulang_lama = datetime.strptime(
+            row["Tarikh Pulang"],
+            "%d/%m/%Y"
+        )
+
+        if (
+            tarikh_mula_baru <= pulang_lama and
+            tarikh_pulang_baru >= mula_lama
+        ):
+            return False
+
+    return True
+
 def simpan_permohonan(data):
 
     next_id = len(sheet.get_all_values())
@@ -357,6 +391,23 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         tarikh_pulang = tarikh_mula + timedelta(
             days=context.user_data["bil_hari"]
         )
+
+        tersedia = semak_ketersediaan_laptop(
+            context.user_data["laptop"],
+            tarikh_mula,
+            tarikh_pulang
+        )
+
+        if not tersedia:
+
+            await update.message.reply_text(
+                f"❌ Laptop {context.user_data['laptop']} "
+                "telah ditempah atau sedang dipinjam "
+                "dalam tempoh tersebut.\n\n"
+                "Sila pilih tarikh lain atau laptop lain."
+            )
+
+            return
 
         simpan_permohonan({
             "nama": AUTHORIZED_USERS[user_id],
