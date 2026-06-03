@@ -346,17 +346,20 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
             semua_data = sheet.get_all_records()
 
-            permohonan_menunggu = []
+            keyboard = []
 
             for row in semua_data:
 
                 if row["Status"] == "Menunggu":
 
-                    permohonan_menunggu.append(
-                        f"#{row['ID']} - {row['Nama']} ({row['Laptop']})"
-                    )
+                    keyboard.append([
+                        InlineKeyboardButton(
+                            f"#{row['ID']} - {row['Nama']} ({row['Laptop']})",
+                            callback_data=f"permohonan_{row['ID']}"
+                        )
+                    ])
 
-            if not permohonan_menunggu:
+            if not keyboard:
 
                 await update.message.reply_text(
                     "✅ Tiada permohonan yang menunggu kelulusan."
@@ -365,8 +368,8 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
             else:
 
                 await update.message.reply_text(
-                    "📋 Permohonan Menunggu Kelulusan\n\n"
-                    + "\n".join(permohonan_menunggu)
+                    "📋 Pilih Permohonan:",
+                    reply_markup=InlineKeyboardMarkup(keyboard)
                 )
 
 
@@ -392,6 +395,47 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
             today.month,
             day
         )
+
+    elif data.startswith("permohonan_"):
+
+        permohonan_id = int(
+            data.replace("permohonan_", "")
+        )
+
+        semua_data = sheet.get_all_records()
+
+        for row in semua_data:
+
+            if row["ID"] == permohonan_id:
+
+                keyboard = InlineKeyboardMarkup([
+                    [
+                        InlineKeyboardButton(
+                            "✅ Lulus",
+                            callback_data=f"approve_{permohonan_id}"
+                        )
+                    ],
+                    [
+                        InlineKeyboardButton(
+                            "❌ Tolak",
+                            callback_data=f"reject_{permohonan_id}"
+                        )
+                    ]
+                ])
+
+                await query.message.reply_text(
+                    f"📋 PERMOHONAN #{row['ID']}\n\n"
+                    f"👤 Nama : {row['Nama']}\n"
+                    f"💻 Laptop : {row['Laptop']}\n"
+                    f"📅 Tarikh Mula : {row['Tarikh Mula']}\n"
+                    f"📆 Tempoh : {row['Tempoh Hari']} Hari\n"
+                    f"📅 Tarikh Pulang : {row['Tarikh Pulang']}\n\n"
+                    f"📝 Catatan :\n{row['Catatan']}\n\n"
+                    f"📋 Status : {row['Status']}",
+                    reply_markup=keyboard
+                )
+
+            break
 
         context.user_data["tarikh_mula"] = selected_date.strftime("%d/%m/%Y")
 
