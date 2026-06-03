@@ -486,8 +486,8 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 rekod_pengguna.append(
                     f"#{row['ID']} | {row['Laptop']}\n"
                     f"📅 {row['Tarikh Pinjam']} → {row['Tarikh Pulang']}\n"
-                    f"{ikon} {status}\n"
                     f"📝 {row['Catatan']}\n"
+                    f"{ikon} {status}\n"
                 )
 
         if not rekod_pengguna:
@@ -643,7 +643,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await context.bot.send_message(
                 chat_id=int(rekod["Telegram ID"]),
                 text=(
-                    "🎉 Permohonan pinjaman laptop anda telah diluluskan.\n\n"
+                    "🎉 Permohonan pinjaman laptop telah diluluskan.\n\n"
                     f"💻 Laptop: {rekod['Laptop']}\n"
                     f"📅 Tarikh Pinjam: {rekod['Tarikh Pinjam']}\n"
                     f"📅 Tarikh Pulang: {rekod['Tarikh Pulang']}"
@@ -680,7 +680,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await context.bot.send_message(
                 chat_id=int(rekod["Telegram ID"]),
                 text=(
-                    "❌ Permohonan pinjaman laptop anda tidak diluluskan.\n\n"
+                    "❌ Permohonan pinjaman laptop tidak diluluskan.\n\n"
                     f"💻 Laptop: {rekod['Laptop']}\n"
                     f"📅 Tarikh Pinjam: {rekod['Tarikh Pinjam']}"
                 )
