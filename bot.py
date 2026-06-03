@@ -115,6 +115,17 @@ def kemaskini_status(permohonan_id, status_baru):
 
     return False
 
+def dapatkan_permohonan(permohonan_id):
+
+    semua_data = sheet.get_all_records()
+
+    for row in semua_data:
+
+        if str(row["ID"]) == str(permohonan_id):
+            return row
+
+    return None
+
 def simpan_permohonan(data):
 
     next_id = len(sheet.get_all_values())
@@ -428,6 +439,16 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
             ["❌ Batal"]
         ]
 
+    reply_markup = ReplyKeyboardMarkup(
+        keyboard,
+        resize_keyboard=True
+    )
+
+    await query.message.reply_text(
+        f"✅ Tarikh dipilih: {context.user_data['tarikh_mula']}\n\n📆 Pilih tempoh pinjaman:",
+        reply_markup=reply_markup
+    )
+
         
 
     elif data.startswith("permohonan_"):
@@ -484,6 +505,20 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         if berjaya:
 
+            rekod = dapatkan_permohonan(
+                permohonan_id
+            )
+
+            await context.bot.send_message(
+                chat_id=int(rekod["Telegram ID"]),
+                text=(
+                    "🎉 Permohonan pinjaman laptop anda telah diluluskan.\n\n"
+                    f"💻 Laptop: {rekod['Laptop']}\n"
+                    f"📅 Tarikh Mula: {rekod['Tarikh Mula']}\n"
+                    f"📅 Tarikh Pulang: {rekod['Tarikh Pulang']}"
+                )
+            )
+
             await query.edit_message_text(
                 f"✅ Permohonan #{permohonan_id} telah diluluskan."
             )
@@ -507,28 +542,30 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         if berjaya:
 
+            rekod = dapatkan_permohonan(
+                permohonan_id
+            )
+
+            await context.bot.send_message(
+                chat_id=int(rekod["Telegram ID"]),
+                text=(
+                    "❌ Permohonan pinjaman laptop anda tidak diluluskan.\n\n"
+                    f"💻 Laptop: {rekod['Laptop']}\n"
+                    f"📅 Tarikh Mula: {rekod['Tarikh Mula']}"
+                )
+            )
+
             await query.edit_message_text(
                 f"❌ Permohonan #{permohonan_id} telah ditolak."
             )
 
         else:
-
+    
             await query.edit_message_text(
                 "❌ Gagal mengemaskini status."
-             )
+            )
 
-        
-
-        reply_markup = ReplyKeyboardMarkup(
-            keyboard,
-            resize_keyboard=True
-        )
-
-        await query.message.reply_text(
-            f"✅ Tarikh dipilih: {context.user_data['tarikh_mula']}\n\n📆 Pilih tempoh pinjaman:",
-            reply_markup=reply_markup
-        )
-
+    
 
 app = Application.builder().token(TOKEN).build()
 
