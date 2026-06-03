@@ -243,13 +243,43 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         context.user_data["catatan"] = text
         context.user_data["awaiting_catatan"] = False
 
+        keyboard = [
+            ["✅ Hantar Permohonan"],
+            ["✏️ Ubah"],
+            ["❌ Batal"]
+        ]
+
+        reply_markup = ReplyKeyboardMarkup(
+            keyboard,
+            resize_keyboard=True
+        )
+
         await update.message.reply_text(
             f"📋 SEMAKAN PERMOHONAN\n\n"
             f"💻 Laptop : {context.user_data['laptop']}\n"
             f"📅 Tarikh Mula : {context.user_data['tarikh_mula']}\n"
             f"📆 Tempoh : {context.user_data['bil_hari']} Hari\n\n"
-            f"📝 Catatan :\n{text}"
+            f"📝 Catatan :\n{context.user_data['catatan']}",
+            reply_markup=reply_markup
         )
+
+    elif text == "✅ Hantar Permohonan":
+
+        await update.message.reply_text(
+            "✅ Permohonan berjaya dihantar kepada Pegawai Pengesah."
+        )
+
+        await start(update, context)
+
+    elif text == "✏️ Ubah":
+
+        context.user_data.clear()
+
+        await update.message.reply_text(
+            "✏️ Sila buat permohonan semula."
+        )
+
+        await start(update, context)
 
     elif text == "❌ Batal":
 
