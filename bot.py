@@ -38,10 +38,45 @@ client = gspread.authorize(creds)
 
 sheet = client.open_by_key(SPREADSHEET_ID).worksheet("permohonan")
 
-APPROVER_ID = 522707506
+APPROVER_IDS = [
+    522707506,
+    5114021646,
+    14518619,
+    44357139
+]
 
 AUTHORIZED_USERS = {
-    522707506: "Muhammad Asyraf"
+    522707506: "Muhammad Asyraf Bin Abdullah Zawawi",
+    96912841: "Jareena",
+    87224364: "Azlinda",
+    686953899: "Chithhra",
+    706468792: "Endhumathy",
+    53256464: "Shahairi",
+    105756368: "Roslan",
+    259279692: "Fadzilah",
+    5922661783: "Munirah",
+    148175483: "Imanina",
+    736049380: "Ghani",
+    1148399527: "Norul Fazlin",
+    209057600: "Zarina",
+    55263334: "Azizul",
+    610666562: "Yusuf",
+    183520169: "Normasita",
+    479736124: "Noor Azlin",
+    71780284: "Suria",
+    453716046: "Syiqin",
+    953023626: "Azura",
+    615295425: "Za'aimah",
+    50015907: "Rohayu",
+    36047084: "Azlinawati",
+    30137439: "Zahilah",
+    157978416: "Huzaini",
+    72220057: "Zuraini",
+    281037596: "Masita",
+    48984651: "Uzma",
+    5114021646: "Mohd Faizal",
+    14518619: "Nizam",
+    44357139: "Suemanie"
 }
 
 def build_calendar():
@@ -246,7 +281,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         ["📊 Status Laptop", "📜 Rekod Pinjaman Saya"]
     ]
 
-    if user_id == APPROVER_ID:
+    if user_id in APPROVER_IDS:
         keyboard.append(["📝 Tindakan GPK"])
 
     reply_markup = ReplyKeyboardMarkup(
@@ -527,7 +562,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     elif text == "📝 Tindakan GPK":
 
-        if user_id == APPROVER_ID:
+        if user_id in APPROVER_IDS:
 
             semua_data = sheet.get_all_records()
 
