@@ -347,8 +347,9 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         context.user_data["tarikh_mula"] = datetime.now().strftime("%d/%m/%Y")
 
         keyboard = [
+            ["📍 Hari Yang Sama"],
             ["1 Hari", "3 Hari", "5 Hari"],
-            ["7 Hari", "14 Hari"],
+            ["7 Hari"],
             ["✏️ Lain-lain"],
             ["❌ Batal"]
         ]
@@ -370,7 +371,17 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
             reply_markup=build_calendar()
         )
 
-    elif text in ["1 Hari", "3 Hari", "5 Hari", "7 Hari", "14 Hari"]:
+    elif text == "📍 Hari Yang Sama":
+
+        context.user_data["bil_hari"] = 0
+
+        await update.message.reply_text(
+            "📝 Sila masukkan tujuan / catatan pinjaman:"
+        )
+
+        context.user_data["awaiting_catatan"] = True
+
+    elif text in ["1 Hari", "3 Hari", "5 Hari", "7 Hari"]:
 
         bil_hari = int(text.split()[0])
 
@@ -427,11 +438,30 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
             resize_keyboard=True
         )
 
+        tarikh_mula = datetime.strptime(
+            context.user_data["tarikh_mula"],
+            "%d/%m/%Y"
+        )
+
+        if context.user_data["bil_hari"] == 0:
+
+            tempoh = "Hari Yang Sama"
+            tarikh_pulang = tarikh_mula
+
+        else:
+
+            tempoh = f"{context.user_data['bil_hari']} Hari"
+
+            tarikh_pulang = tarikh_mula + timedelta(
+                days=context.user_data["bil_hari"]
+            )
+
         await update.message.reply_text(
             f"📋 SEMAKAN PERMOHONAN\n\n"
             f"💻 Laptop : {context.user_data['laptop']}\n"
-            f"📅 Tarikh Mula Pinjam : {context.user_data['tarikh_mula']}\n"
-            f"📆 Tempoh : {context.user_data['bil_hari']} Hari\n\n"
+            f"📅 Tarikh Pinjam : {context.user_data['tarikh_mula']}\n"
+            f"📆 Tempoh : {tempoh}\n"
+            f"📅 Tarikh Pulang : {tarikh_pulang.strftime('%d/%m/%Y')}\n\n"
             f"📝 Catatan :\n{context.user_data['catatan']}",
             reply_markup=reply_markup
         )
@@ -445,9 +475,15 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "%d/%m/%Y"
         )
 
-        tarikh_pulang = tarikh_mula + timedelta(
-            days=context.user_data["bil_hari"]
-        )
+        if context.user_data["bil_hari"] == 0:
+
+            tarikh_pulang = tarikh_mula
+
+        else:
+
+            tarikh_pulang = tarikh_mula + timedelta(
+                days=context.user_data["bil_hari"]
+            )
 
         tersedia = semak_ketersediaan_laptop(
             context.user_data["laptop"],
@@ -623,8 +659,9 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
         context.user_data["tarikh_mula"] = selected_date.strftime("%d/%m/%Y")
 
         keyboard = [
+            ["📍 Hari Yang Sama"],
             ["1 Hari", "3 Hari", "5 Hari"],
-            ["7 Hari", "14 Hari"],
+            ["7 Hari"],
             ["✏️ Lain-lain"],
             ["❌ Batal"]
         ]
@@ -673,7 +710,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f"👤 Nama : {row['Nama']}\n"
                     f"💻 Laptop : {row['Laptop']}\n"
                     f"📅 Tarikh Pinjam : {row['Tarikh Pinjam']}\n"
-                    f"📆 Tempoh : {row['Tempoh Hari']} Hari\n"
+                    f"📆 Tempoh : {'Hari Yang Sama' if int(row['Tempoh Hari']) == 0 else str(row['Tempoh Hari']) + ' Hari'}\n"
                     f"📅 Tarikh Pulang : {row['Tarikh Pulang']}\n\n"
                     f"📝 Catatan :\n{row['Catatan']}\n\n"
                     f"📋 Status : {row['Status']}",
