@@ -233,10 +233,26 @@ def status_laptop():
 
         elif row["Status"] == "Diluluskan":
 
-            status[laptop] = (
-                f"🔴 Dipinjam sehingga "
-                f"{row['Tarikh Pulang']}"
-            )
+            hari_ini = datetime.now(
+                ZoneInfo("Asia/Kuala_Lumpur")
+            ).date()
+
+            tarikh_mula = datetime.strptime(
+                row["Tarikh Pinjam"],
+                "%d/%m/%Y"
+            ).date()
+
+            tarikh_pulang = datetime.strptime(
+                row["Tarikh Pulang"],
+                "%d/%m/%Y"
+            ).date()
+
+            if tarikh_mula <= hari_ini <= tarikh_pulang:
+
+                status[laptop] = (
+                    f"🔴 Dipinjam sehingga "
+                    f"{row['Tarikh Pulang']}"
+                )
 
     return status
 
