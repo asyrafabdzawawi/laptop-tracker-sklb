@@ -182,6 +182,32 @@ def dapatkan_permohonan(permohonan_id):
 
     return None
 
+def kemaskini_pinjaman_tamat():
+
+    semua_data = sheet.get_all_records()
+
+    hari_ini = datetime.now(
+        ZoneInfo("Asia/Kuala_Lumpur")
+    ).date()
+
+    for index, row in enumerate(semua_data, start=2):
+
+        if row["Status"] != "Diluluskan":
+            continue
+
+        tarikh_pulang = datetime.strptime(
+            row["Tarikh Pulang"],
+            "%d/%m/%Y"
+        ).date()
+
+        if hari_ini > tarikh_pulang:
+
+            sheet.update_cell(
+                index,
+                10,
+                "Dipulangkan"
+            )
+
 def status_laptop():
 
     semua_data = sheet.get_all_records()
@@ -219,6 +245,8 @@ def semak_ketersediaan_laptop(
     tarikh_mula_baru,
     tarikh_pulang_baru
 ):
+
+    kemaskini_pinjaman_tamat()
 
     semua_data = sheet.get_all_records()
 
@@ -270,6 +298,8 @@ def simpan_permohonan(data):
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     user_id = update.effective_user.id
+
+    kemaskini_pinjaman_tamat()
 
     if user_id not in AUTHORIZED_USERS:
         await update.message.reply_text(
@@ -539,6 +569,8 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     elif text == "📊 Status Laptop":
 
+        kemaskini_pinjaman_tamat()
+
         status = status_laptop()
 
         mesej = (
@@ -571,11 +603,17 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 if status == "Diluluskan":
                     ikon = "✅"
 
+                elif status == "Dipulangkan":
+                    ikon = "🔵"
+
                 elif status == "Ditolak":
                     ikon = "❌"
 
-                else:
+                elif status == "Menunggu Kelulusan":
                     ikon = "🟡"
+
+                else:
+                    ikon = "⚪"
 
                 rekod_pengguna.append(
                     f"#{row['ID']} | {row['Laptop']}\n"
